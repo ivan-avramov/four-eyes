@@ -1,0 +1,10 @@
+;; four-eyes write guard for macOS sandbox-exec. Deny every write by default; allow the isolated copy and
+;; the runtime's own state. Replace the placeholders before use; run sandbox/probes.md first.
+(version 1)
+(allow default)
+(deny file-write*)
+(allow file-write* (subpath "<copy>"))
+(allow file-write* (subpath "<runtime-state>"))      ; e.g. the CLI's config home for the run
+(allow file-write* (subpath "/private/tmp/<run-id>")) ; the run's own scratch, nothing else under /tmp
+(deny file-read* (subpath "<home>/.ssh") (subpath "<home>/.aws") (subpath "<home>/.codex/auth.json") (subpath "<home>/.config/gh"))
+;; add (deny network*) for the nested test guard; the model service's own process must not run under that profile.
