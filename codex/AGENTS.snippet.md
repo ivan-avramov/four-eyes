@@ -1,14 +1,3 @@
-## four-eyes (role-based multi-provider method)
+## four-eyes
 
-For any multi-file change, new component, architecture, or anything touching security or a data
-boundary, work in four roles and never name a required model: Designer (this session) writes a
-specification with pre-registered acceptance criteria; Verifier (a different provider's strongest
-available model, cold context, adversarial; use `claude -p` when available) reviews it before any
-implementation and every finding gets a disposition; Worker (a capable model in its own context)
-implements from the approved specification only, commits and pushes nothing; Reviewer (a capable model
-distinct from the worker, cold context) writes adversarial tests first, runs the suite, reviews for
-security and quality. Report the provider and model actually used per role as
-`[four-eyes] designer: … | verifier: … | worker: … | reviewer: …`. If a role cannot be filled as
-intended (missing CLI, auth, usage limit, same model as another role), stop and ask the operator with
-a recommendation. Workers and reviewers never edit running scripts in place, never print environment
-variables, never touch decision logs or agent instruction files, never push.
+For any change touching security, authentication, permissions, secrets or a data boundary, and for any multi-file change, new component or architecture, follow the installed `four-eyes` skill (`~/.agents/skills/four-eyes`, which requires `review-panel`). Fill its roles as the skill says, record the evidence of the models that ran, and stop to ask the operator with a recommendation when a role cannot be filled as intended. If the skill is not installed, say so and ask before proceeding.
