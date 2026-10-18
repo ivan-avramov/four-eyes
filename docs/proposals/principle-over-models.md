@@ -1,9 +1,13 @@
 # four-eyes 0.5.0 and review-panel 0.3.0: principle over models
 
-Status: specification, draft 4 (2026-10-18), after three review-panel converge rounds (Codex and a
-Claude model each round). Round-three findings are applied here and not re-reviewed. Not approved:
-the operator approves before either skill changes. The review-panel changes are proposed to the
-operator for that repository; this document does not edit it.
+Status: specification, draft 5 (2026-10-18). Draft 4 followed three review-panel converge rounds
+(Codex and a Claude model each round) and was approved by the operator on 2026-10-18. Draft 5 applies
+the amendments the operator accepted the same day after the implementation's reviewer and panel read
+the candidate (fresh-context definition, run-level symbols, cross-vendor unresolved identity, the
+step-2 gate flag, the roles-block flags field, the Isolation stop, the none wording in review-panel,
+the second-question causes, remediation sessions, the build checkpoint per candidate); they are
+disclosed here and not re-verified. The review-panel changes are proposed to the operator for that
+repository, applied by the session only to the installed copies.
 
 ## 1. Goal
 
@@ -88,12 +92,13 @@ A level describes which correlated risks the configuration reduces, never that a
 caught; a report may claim a defect was caught only when a finding shows it.
 
 Fresh context, operationally: a new session with its own session id, started without a resume or fork
-flag, in a scratch directory holding only the briefed material (no project instruction files, no
-memory index), with automatic and shared agent memory disabled. Freshness is evidenced per execution:
-the runtime's session id, the recorded command (no resume flag; the memory-disabling flag or
-configuration), the working directory and the instruction files present in it. One exemption: the
-reviewer's phase B resumes the reviewer's own phase A session and no other; the resumed id is recorded
-and checked equal to the phase A id. Where freshness cannot be evidenced (a host subagent exposes no
+flag, inheriting no transcript, summary or memory from any other role's session, with automatic and
+shared agent memory disabled. Freshness is evidenced per execution: the runtime's session id, the
+recorded command (no resume flag; the memory-disabling flag or configuration), the working directory
+and the instruction files present in it, recorded, not required absent: the briefed material includes
+the isolated copy for write-capable roles and the read-only checkout for checkout members. One
+exemption: the reviewer's phase B resumes the reviewer's own phase A session and no other; the resumed
+id is recorded and checked equal to the phase A id. Remediation runs in a new worker session. Where freshness cannot be evidenced (a host subagent exposes no
 session id), the role has no level: it is admissible for a required pair only by the operator's answer
 in that run's gate (5.3), is reported with the `none` wording, and never counts toward distinct models.
 The driver's own session never fills a required pair.
@@ -104,9 +109,12 @@ auxiliary, listed as such in the ledger and excluded from levels and counts. Ven
 operator's dated declaration in the panel file, cross-checked against the observed model id and the
 runtime, with `vendor basis: declared | observed | model knowledge` recorded; model knowledge as the
 basis is a degradation with fixed wording. An unverified alias (a host subagent, an echoed selector
-with no resolved model) supports L1 at most; an unknown vendor counts as the same vendor, so
-known-different models of unknown vendor reach L2 at most, and a request for "a vendor other than X"
-is never satisfied by an unknown vendor.
+with no resolved model) supports L1 at most on the model axis, since unknown identity cannot establish
+model distinctness, but a vendor the runtime itself evidences (a Codex CLI run is OpenAI's) reaches L3
+with the model counted as identity unresolved; Codex's `model:` header is the resolved model, as
+runtimes.md states. An unknown vendor counts as the same vendor, so known-different models of unknown
+vendor reach L2 at most, and a request for "a vendor other than X" is never satisfied by an unknown
+vendor.
 
 Required pairs, preferred and minimum levels:
 
@@ -132,10 +140,10 @@ dispatch, with a stop report.
 Disclosure lines are per member pair: one line per distinct level present, listing the member pairs at
 that level, with the wording from the table byte for byte; pairs below their preferred level are
 marked degraded in the same line; panel minimums appear in the matrix. A run-level line follows:
-`verified distinct models across all roles: n (identity unresolved: k); verified distinct vendors: n`.
-When k is zero and n is two: `Every check in this run was made by two models; an error both make
+`verified distinct models across all roles: m (identity unresolved: k); verified distinct vendors: v`.
+When k is zero and m is two: `Every check in this run was made by two models; an error both make
 consistently is not reduced, and on L1 pairs an error that model makes consistently is not reduced.`
-When k is zero and n is one: `Every check in this run was made by one model; any error it makes
+When k is zero and m is one: `Every check in this run was made by one model; any error it makes
 consistently is not reduced.` When k is not zero, no total is asserted; the line stands alone. Further
 fixed wordings: `reviewer shares the designer's model: the adversarial tests do not reduce misreadings
 of the specification that model makes consistently`; `tier basis: model knowledge, cutoff <date>`;
@@ -154,7 +162,8 @@ reaches it; a `top` member takes a `capable` role only when it reaches a higher 
 `capable` member can, recorded with its fixed wording and put to the operator in the gate beside the
 alternative level the `capable` member would reach; a `capable` member sits on a verifier or candidate
 panel beside a `top` member when it adds a level no `top` member reaches. The verifier panel always
-includes at least one `top` member; a fresh session of the designer's model counts (L1). When no `top`
+includes at least one `top` member; a fresh session of the designer's model counts when the designer's
+model is `top` (L1). When no `top`
 member exists at all, the verifier is all-`capable` only by the operator's answer (`verifier below top
 tier`). A session model that is not `top` is `designer below top tier`, put to the operator the same
 way. The reviewer's model equalling the designer's is disclosed with its fixed wording, and another
@@ -176,9 +185,15 @@ wording for each level below L3; every pair below its preferred level, marked; e
 tier substitution with the alternative; the recommendation; and the request for approval. Nothing
 write-capable is dispatched before the operator's answer, which the report records verbatim with a
 timestamp, and which may approve, approve with changes to the assignment, or stop. In strict mode the
-same message is sent; there is no configuration that skips it. A second question in a run arises only
-from escalation (5.4), lost coverage or an evidence mismatch (5.1), and is recorded the same way; if
-the operator declines a second question the run stops with a report and no commit.
+same message is sent; there is no configuration that skips it. Beyond the gate, questions arise only
+from escalation (5.4), lost coverage or an evidence mismatch (5.1), or the procedure's named operator
+decisions (an unresolved converge, a changed operator tree at acceptance, an unresolved blocker after
+remediation, a second remediation round, an out-of-scope build hit, a found secret); each is recorded
+with its cause label; if the operator declines any of them the run stops with a report and no commit.
+At step 2 four-eyes passes review-panel `gate: deferred`: verification runs read-only at the planned
+levels, levels are reported, no question is asked and nothing write-capable may follow under that
+flag; at the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
+operator's recorded gate answer.
 
 Worked minimum: one vendor, two models, A (`top`) and B (`capable`), both on a CLI runtime that
 reports the model and session it ran. With two models at least one required pair is always at L1.
@@ -204,7 +219,8 @@ runs at L1 throughout and prints the one-model sentence.
 - **Light** (default): the verifier is one review-panel converge invocation with `rounds = 1` passed
   by four-eyes (dispatch, adjudicate, apply, no re-dispatch); specification changes applied after the
   dispatch are listed at the gate as not re-reviewed. Reviewer phases A and B unchanged. The panel on
-  the frozen candidate is one invocation. Remediation: findings go to the worker once; the fixed
+  the frozen candidate is one invocation. Remediation: findings go to a new worker session once, with the specification, the candidate, the
+  findings and the frozen tests; the fixed
   candidate goes through phase B in full and, since its contents changed after the panel read them,
   through the panel again in fresh sessions, which in light mode may be scoped to the remediation diff
   with the full candidate and the diff range supplied and the limit recorded; each panel verdict is
@@ -221,7 +237,8 @@ operator's explicit answer naming the trigger class it covers for this run, reco
 block; a hit on a waived class is recorded `waived`, not `clear`, and does not escalate. The triggers
 are evaluated at three checkpoints and the result recorded each time: after design, against the
 specification text; at the gate; after build, against the candidate diff (paths, new or changed
-interfaces, permission checks, secret handling). The verifier brief asks members to flag strict
+interfaces, permission checks, secret handling), and again against every later candidate hash (each
+remediation). The verifier brief asks members to flag strict
 triggers they see; a member-flagged trigger escalates unless the operator waives it, since the driver
 is the interested party.
 
@@ -280,24 +297,37 @@ per-execution fields and a per-round totals block.
    The default's order of preference among other models is the roster's, not the skill's; a preference
    for another vendor is the operator's to declare in the file.
 3. review-panel always enforces fresh context, never admits L0, and always computes and reports
-   evidenced levels, whoever supplies the members. Only the acceptance of levels below preferred is
-   delegated, and only when the caller states `gate: caller` and passes the operator's recorded answer
-   as evidence; otherwise review-panel's own gate applies. The report states which gate applied.
+   evidenced levels, whoever supplies the members. Its standalone preferred level is L2 against the
+   driver (L3 welcome); a member at `none` is admitted only by the operator's answer or under `gate:
+   caller`, and carries the fixed `none` wording of 5.1; a non-interactive caller stops instead of
+   asking. Only the acceptance of levels below preferred is delegated, and only when the caller states
+   `gate: caller` and passes the operator's recorded answer as evidence; `gate: deferred` runs a
+   read-only review at the planned levels, reports them, asks nothing and permits no write-capable
+   work; otherwise review-panel's own gate applies. The report states which gate applied. The
+   `checkout` context is a separate `git clone --no-hardlinks` copy, never a worktree.
 4. Converge accepts `rounds` (1 to 3); the default stays 3 so standalone callers see no change; the
    caller decides the round count (four-eyes passes 1 in light mode and 3 in strict). The `opinion`
    and `research` modes are unchanged.
 5. A caller may request members by constraint (vendor other than X, tier top) instead of by name;
    review-panel resolves from the roster, reports the level achieved per constraint from evidence (an
    unknown vendor never satisfies "other than"), and never silently substitutes.
-6. Report: a questions section (every operator question and answer verbatim with timestamps, or
+6. Totals bucket money by runtime, billing basis and currency; the execution record carries role and
+   phase, supplied by the caller where applicable; a tier absent from the file resolves per 5.2 (host's
+   model list, then model knowledge with its cutoff as a degradation); panel.example.toml ships vendor,
+   tier and billing as commented examples or load-failing placeholders, and a declaration that
+   contradicts the runtime or the observed model id falls back to same vendor and is an evidence
+   mismatch.
+7. Report: a questions section (every operator question and answer verbatim with timestamps, or
    `none`); the file-load warnings line; per member and round the 5.5 execution record; a totals block
    per round and per run with coverage; the roster names each member's tier, vendor basis and evidenced
    level against the driver; which gate applied.
-7. Runtimes: the evidence fields of A6 are the cost and identity evidence; a subagent is `unreported`.
-8. Wording: "a model other than yours" stays the default; the file never names a vendor as required.
+8. Runtimes: the evidence fields of A6 are the cost and identity evidence; a subagent is `unreported`.
+9. Wording: "a model other than yours" stays the default; the file never names a vendor as required.
 
 ### 5.7 four-eyes 0.5.0 changes
 
+- Isolation: a write-capable host subagent that cannot be confined stops the run (settled 2026-10-18,
+  replacing 0.4.0's "or gate"); otherwise isolation is unchanged.
 - SKILL.md: Roles and tiers rewritten around 5.1 and 5.2; "When a role cannot be filled" rewritten
   around 5.3 (plan, verify read-only, one gate message, proceed on the recorded answer; the unchanged
   hard stops: missing CLI, failed authentication, usage limit, unresolvable selector, unexpected
@@ -314,7 +344,7 @@ per-execution fields and a per-round totals block.
 - Roles block:
 
 ```
-[four-eyes 0.5.0] outcome: completed|stopped|rejected | mode: light|strict (<reason>; checkpoints: design <hit|clear|waived|not reached>, gate <...>, build <...>; escalation: <none|at <checkpoint>, cycle n>; waiver: <none|operator, classes, reason>) | designer: <runtime:vendor/model, vendor basis, tier, evidence, session> | verifier: <per member: runtime:vendor/model, tier, Lx against designer, fresh <evidenced|none>, returned|failed; cycles n, rounds n> | worker: <runtime:vendor/model, tier, evidence, Lx against driver> | reviewer: <runtime:vendor/model, tier, evidence, Lx against worker, phase B resumed <id equal>|replaced (<cause>)> | panel: <per member: ... Lx against worker, Lx against reviewer, returned|failed; panel minimum Lx/Lx> | verified distinct models: n (unresolved k); vendors: n | gate: <timestamp, operator's answer verbatim; second questions: <...>|none>
+[four-eyes 0.5.0] outcome: completed|stopped|rejected | mode: light|strict (<reason>; checkpoints: design <hit|clear|waived|not reached>, gate <...>, build <...>; escalation: <none|at <checkpoint>, cycle n>; waiver: <none|operator, classes, reason>; flags: <member-flagged triggers and dispositions | none>) | designer: <runtime:vendor/model, vendor basis, tier, evidence, session> | verifier: <per member: runtime:vendor/model, tier, Lx against designer, fresh <evidenced|none>, returned|failed; cycles n, rounds n> | worker: <runtime:vendor/model, tier, evidence, Lx against driver> | reviewer: <runtime:vendor/model, tier, evidence, Lx against worker, phase B resumed <id equal>|replaced (<cause>)> | panel: <per member: ... Lx against worker, Lx against reviewer, returned|failed; panel minimum Lx/Lx> | verified distinct models: m (unresolved k); vendors: v | gate: <timestamp, operator's answer verbatim; second questions: <...>|none>
 ```
 
 - briefs/verify.md: the brief states the mode, cycle and rounds and asks members to flag strict
