@@ -1,6 +1,6 @@
 # four-eyes 0.5.0 and review-panel 0.3.0: principle over models
 
-Status: specification, draft 5 (2026-10-18). Draft 4 followed three review-panel converge rounds
+Status: specification, draft 6 (2026-10-18; draft 6 adds the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
 (Codex and a Claude model each round) and was approved by the operator on 2026-10-18. Draft 5 applies
 the amendments the operator accepted the same day after the implementation's reviewer and panel read
 the candidate (fresh-context definition, run-level symbols, cross-vendor unresolved identity, the
@@ -103,7 +103,8 @@ session id), the role has no level: it is admissible for a required pair only by
 in that run's gate (5.3), is reported with the `none` wording, and never counts toward distinct models.
 The driver's own session never fills a required pair.
 
-Identity: the member's model is the observed model matching the requested selector, from the
+Identity: the member's model is the observed model the runtime resolves the requested selector to
+(per runtimes.md's alias rules; no match or more than one match is an evidence mismatch), from the
 runtime's evidence (0.4.0's sources); other models a runtime reports for the same execution are
 auxiliary, listed as such in the ledger and excluded from levels and counts. Vendor comes from the
 operator's dated declaration in the panel file, cross-checked against the observed model id and the
@@ -134,8 +135,9 @@ operator before the output is adopted, and a changed model identity is an unexpe
 (hard stop) as in 0.4.0. A panel's level against a role is the minimum over the members that returned
 valid results, printed in the member-by-role matrix beside each member's own level; when a round loses
 planned coverage because a member failed or returned no valid result, the effective matrix drops and
-the run re-asks before adopting that round's findings. A pair that cannot reach L1 stops the run before
-dispatch, with a stop report.
+the run re-asks before adopting that round's findings. A pair that cannot reach L1 by evidence and is not a `none` pair the operator admits at the gate stops
+the run before dispatch, with a stop report; `none` is never admissible for a write-capable role. A
+`none` member counts among the identity-unresolved k, never toward m.
 
 Disclosure lines are per member pair: one line per distinct level present, listing the member pairs at
 that level, with the wording from the table byte for byte; pairs below their preferred level are
@@ -190,10 +192,19 @@ from escalation (5.4), lost coverage or an evidence mismatch (5.1), or the proce
 decisions (an unresolved converge, a changed operator tree at acceptance, an unresolved blocker after
 remediation, a second remediation round, an out-of-scope build hit, a found secret); each is recorded
 with its cause label; if the operator declines any of them the run stops with a report and no commit.
-At step 2 four-eyes passes review-panel `gate: deferred`: verification runs read-only at the planned
-levels, levels are reported, no question is asked and nothing write-capable may follow under that
-flag; at the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
-operator's recorded gate answer.
+At step 2 four-eyes passes review-panel `gate: deferred`: no write-capable member is dispatched and
+nothing is written outside the converge artifact, the driver's own revision of that artifact being
+permitted and listed at the gate as not re-reviewed; levels are reported, no question is asked; a
+`none` member runs and is reported, its findings held separately and applied only after the gate
+admits it. At the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
+operator's recorded gate answer, which admits only the members and levels that answer names; any
+other `none` member or lower level stops review-panel and returns to the caller as lost coverage or an
+evidence mismatch. An `unresolved converge` is a set of findings the driver still holds unresolved,
+never the mere reaching of the round cap; named decisions that arise before the gate (`unresolved
+converge`, `unsupported context`, `found secret` at step 2) fold into the gate message where possible,
+each keeping its cause label. Sanitising a found secret touches only files outside the candidate's
+paths and the briefs, with the redactions recorded; a secret in a file in scope stops the run until
+the operator removes it from the tree.
 
 Worked minimum: one vendor, two models, A (`top`) and B (`capable`), both on a CLI runtime that
 reports the model and session it ran. With two models at least one required pair is always at L1.
@@ -256,7 +267,8 @@ where it was.
 ### 5.5 Cost reporting
 
 Units: an execution is one runtime invocation (one panel member in one round, the worker, each of the
-reviewer's two deliveries, each remediation dispatch), with a unique execution id; a panel invocation
+reviewer's two deliveries and each re-run of phase B, resuming the same reviewer session and exempt as
+phase B, each remediation dispatch), with a unique execution id; a panel invocation
 is one round of one panel; a verification cycle is one converge call of one to three rounds. R3 counts
 invocations and cycles; the ledger counts executions.
 
@@ -301,9 +313,13 @@ per-execution fields and a per-round totals block.
    driver (L3 welcome); a member at `none` is admitted only by the operator's answer or under `gate:
    caller`, and carries the fixed `none` wording of 5.1; a non-interactive caller stops instead of
    asking. Only the acceptance of levels below preferred is delegated, and only when the caller states
-   `gate: caller` and passes the operator's recorded answer as evidence; `gate: deferred` runs a
-   read-only review at the planned levels, reports them, asks nothing and permits no write-capable
-   work; otherwise review-panel's own gate applies. The report states which gate applied. The
+   `gate: caller` and passes the operator's recorded answer as evidence, which admits only the members
+   and levels it names; `gate: deferred` dispatches no write-capable member, writes nothing outside the
+   converge artifact (the caller's revision of that artifact is permitted), reports levels and asks
+   nothing, holding a `none` member's findings separately; otherwise review-panel's own gate applies,
+   and a standalone member whose evidence lands below the accepted level is put to the operator before
+   its findings are adopted, a non-interactive caller stopping instead. The report states which gate
+   applied, `deferred` recording no acceptance. The
    `checkout` context is a separate `git clone --no-hardlinks` copy, never a worktree.
 4. Converge accepts `rounds` (1 to 3); the default stays 3 so standalone callers see no change; the
    caller decides the round count (four-eyes passes 1 in light mode and 3 in strict). The `opinion`
@@ -385,7 +401,7 @@ release.
   buckets money by runtime and billing basis, and separates elapsed from summed execution seconds.
 - R6 (all outcomes) No required pair is reported at L0; a pair resting on an unverified alias is at L1
   at most; a role with unestablished freshness carries the `none` wording and the operator's answer;
-  a run that cannot reach L1 has outcome `stopped` naming the pair.
+  a run that cannot reach L1 by evidence, with no `none` pair admitted at the gate, has outcome `stopped` naming the pair.
 - R7 (all outcomes) Disclosure wording and the run-level sentences match 5.1 byte for byte; one line
   per distinct level listing member pairs; the sentences appear only when unresolved identities are
   zero.
