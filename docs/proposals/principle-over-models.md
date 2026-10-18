@@ -1,6 +1,6 @@
 # four-eyes 0.5.0 and review-panel 0.3.0: principle over models
 
-Status: specification, draft 6 (2026-10-18; draft 6 adds the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
+Status: specification, draft 7 (2026-10-18; draft 7 adds the third candidate panel's amendments under the operator's standing authorisation: vendor evidence only from a runtime's named provider, the split of zero-match selector cases, secrets found at or after the baseline, the scope of gate: deferred, held findings at the gate, the not-re-reviewed label per converge, a history-less checkout, resume-id evidence, escalation cycles under gate: caller, and the cost block's execution placeholder; draft 6 added the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
 (Codex and a Claude model each round) and was approved by the operator on 2026-10-18. Draft 5 applies
 the amendments the operator accepted the same day after the implementation's reviewer and panel read
 the candidate (fresh-context definition, run-level symbols, cross-vendor unresolved identity, the
@@ -98,21 +98,22 @@ recorded command (no resume flag; the memory-disabling flag or configuration), t
 and the instruction files present in it, recorded, not required absent: the briefed material includes
 the isolated copy for write-capable roles and the read-only checkout for checkout members. One
 exemption: the reviewer's phase B resumes the reviewer's own phase A session and no other; the resumed
-id is recorded and checked equal to the phase A id. Remediation runs in a new worker session. Where freshness cannot be evidenced (a host subagent exposes no
+id is recorded and checked equal to the phase A id, an unequal id meaning `replaced (lost session)`
+with a new candidate-blind phase A, and each runtime's resume-id behaviour is probed once per machine
+(sandbox probes) before the exemption is relied on. Remediation runs in a new worker session. Where freshness cannot be evidenced (a host subagent exposes no
 session id), the role has no level: it is admissible for a required pair only by the operator's answer
 in that run's gate (5.3), is reported with the `none` wording, and never counts toward distinct models.
 The driver's own session never fills a required pair.
 
 Identity: the member's model is the observed model the runtime resolves the requested selector to
-(per runtimes.md's alias rules; no match or more than one match is an evidence mismatch), from the
+(per runtimes.md's alias rules; after dispatch, zero matches with another model present is an unexpected substitution and a hard stop, more than one match is an evidence mismatch, and a selector that cannot be resolved before dispatch is the unresolvable-selector hard stop), from the
 runtime's evidence (0.4.0's sources); other models a runtime reports for the same execution are
 auxiliary, listed as such in the ledger and excluded from levels and counts. Vendor comes from the
 operator's dated declaration in the panel file, cross-checked against the observed model id and the
 runtime, with `vendor basis: declared | observed | model knowledge` recorded; model knowledge as the
 basis is a degradation with fixed wording. An unverified alias (a host subagent, an echoed selector
 with no resolved model) supports L1 at most on the model axis, since unknown identity cannot establish
-model distinctness, but a vendor the runtime itself evidences (a Codex CLI run is OpenAI's) reaches L3
-with the model counted as identity unresolved; Codex's `model:` header is the resolved model, as
+model distinctness, but a vendor the runtime's own output names as the model's provider (Codex's `provider:` header, recorded in the execution record) reaches L3 with the model counted as identity unresolved; the maker of a CLI is never vendor evidence, and with no provider named the vendor falls back to the declaration or to unknown; Codex's `model:` header is the resolved model, as
 runtimes.md states. An unknown vendor counts as the same vendor, so known-different models of unknown
 vendor reach L2 at most, and a request for "a vendor other than X" is never satisfied by an unknown
 vendor.
@@ -192,19 +193,28 @@ from escalation (5.4), lost coverage or an evidence mismatch (5.1), or the proce
 decisions (an unresolved converge, a changed operator tree at acceptance, an unresolved blocker after
 remediation, a second remediation round, an out-of-scope build hit, a found secret); each is recorded
 with its cause label; if the operator declines any of them the run stops with a report and no commit.
-At step 2 four-eyes passes review-panel `gate: deferred`: no write-capable member is dispatched and
-nothing is written outside the converge artifact, the driver's own revision of that artifact being
-permitted and listed at the gate as not re-reviewed; levels are reported, no question is asked; a
-`none` member runs and is reported, its findings held separately and applied only after the gate
-admits it. At the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
+At step 2 four-eyes passes review-panel `gate: deferred`: no write-capable member is dispatched, nothing
+is written to the subject repository or any downstream artifact, orchestration records and runtime
+state go to their guarded locations as always, and the driver's own revision of the converge artifact
+is permitted, labelled not re-reviewed only when applied after the last dispatch, per converge mode;
+levels are reported, no question is asked; a `none` member, a member whose evidence lands below plan,
+or a round that lost coverage, runs and is reported, its findings held separately and not applied; the
+gate message lists every held finding with the driver's proposed disposition, the operator's answer
+that admits the member also approves the resulting specification, a held change applied after the
+answer returns to the gate, and a held blocker or major counts as `unresolved converge` until the gate
+admits the member. An escalation cycle after the gate runs under `gate: caller` with the escalation
+answer. At the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
 operator's recorded gate answer, which admits only the members and levels that answer names; any
 other `none` member or lower level stops review-panel and returns to the caller as lost coverage or an
 evidence mismatch. An `unresolved converge` is a set of findings the driver still holds unresolved,
 never the mere reaching of the round cap; named decisions that arise before the gate (`unresolved
 converge`, `unsupported context`, `found secret` at step 2) fold into the gate message where possible,
-each keeping its cause label. Sanitising a found secret touches only files outside the candidate's
-paths and the briefs, with the redactions recorded; a secret in a file in scope stops the run until
-the operator removes it from the tree.
+each keeping its cause label. Sanitising a found secret touches only disposable material outside the hashed candidate tree (briefs,
+scratch), with the redactions recorded; a secret in any tracked file of that tree, found before the
+baseline, waits for the operator to remove it from the tree; a secret found at or after step 4, in the
+baseline or the candidate, stops the run with a report, or, on the operator's answer, rebuilds from
+step 4 on the cleaned tree with every derived artifact invalidated; a secret in the candidate is also a
+candidate finding and is never dispatched for remediation.
 
 Worked minimum: one vendor, two models, A (`top`) and B (`capable`), both on a CLI runtime that
 reports the model and session it ran. With two models at least one required pair is always at L1.
@@ -289,7 +299,7 @@ The report ends with the ledger, a timestamped event sequence (questions, answer
 and finish of every execution id, freezes, hashes, commit), and a totals block that references them:
 
 ```
-[four-eyes cost] executions: <m> (top <n>, capable <n>, driver 1) | elapsed: <first dispatch to acceptance> | execution seconds summed: <s> over <n> of <m> reported | tokens by runtime and vendor: <runtime>/<vendor>: input <n> cache-read <n> cache-creation <n> output <n> | total-only <n>, over <n> of <m> executions; ... | money by runtime and billing basis: <runtime> (<declared basis, date | basis unknown>, <currency>): <sum> over <n> of <m>; ... | by phase and tier (executions, seconds): verify <...>, build <...>, review <...>, panel <...>, remediate <...>, driver <...>
+[four-eyes cost] executions: <e> (top <n>, capable <n>, driver 1) | elapsed: <first dispatch to acceptance> | execution seconds summed: <s> over <n> of <e> reported | tokens by runtime and vendor: <runtime>/<vendor>: input <n> cache-read <n> cache-creation <n> output <n> | total-only <n>, over <n> of <e> executions; ... | money by runtime and billing basis: <runtime> (<declared basis, date | basis unknown>, <currency>): <sum> over <n> of <e>; ... | by phase and tier (executions, seconds): verify <...>, build <...>, review <...>, panel <...>, remediate <...>, driver <...>
 ```
 
 Tokens are never summed across runtime-and-vendor buckets; money is never summed across runtimes,
@@ -319,8 +329,9 @@ per-execution fields and a per-round totals block.
    nothing, holding a `none` member's findings separately; otherwise review-panel's own gate applies,
    and a standalone member whose evidence lands below the accepted level is put to the operator before
    its findings are adopted, a non-interactive caller stopping instead. The report states which gate
-   applied, `deferred` recording no acceptance. The
-   `checkout` context is a separate `git clone --no-hardlinks` copy, never a worktree.
+   applied, `deferred` recording no acceptance. The `checkout` context is a separate history-less copy (an export of the tracked files, or a
+   single-branch depth-one clone from a file URL), never a worktree and never a full clone, built per
+   four-eyes's Disclosure rule and scanned, any `.git` remnant included.
 4. Converge accepts `rounds` (1 to 3); the default stays 3 so standalone callers see no change; the
    caller decides the round count (four-eyes passes 1 in light mode and 3 in strict). The `opinion`
    and `research` modes are unchanged.
