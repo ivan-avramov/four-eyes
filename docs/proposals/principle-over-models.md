@@ -1,6 +1,6 @@
 # four-eyes 0.5.0 and review-panel 0.3.0: principle over models
 
-Status: specification, draft 8 (2026-10-18; draft 8, under the operator's standing authorisation, closes the fourth panel: a provider name is vendor evidence only when it is a first-party maker on the operator's dated list and matches the observed model, model knowledge as vendor basis only as a gate-disclosed degradation; held changes return to the gate only when applied other than as the gate message proposed, a held blocker counts toward continuing converge; a not-a-secret operator disposition; secret removals committed before the baseline; the specification committed before the baseline and authorised untracked files excluded from the step 10 comparison; reviewer replacement capped at one; the no-model-reported selector case; write-capable copies and checkouts carry no history; review-panel's own build-and-scan rule; e as the execution symbol everywhere; draft 7 added the third candidate panel's amendments under the operator's standing authorisation: vendor evidence only from a runtime's named provider, the split of zero-match selector cases, secrets found at or after the baseline, the scope of gate: deferred, held findings at the gate, the not-re-reviewed label per converge, a history-less checkout, resume-id evidence, escalation cycles under gate: caller, and the cost block's execution placeholder; draft 6 added the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
+Status: specification, draft 9 (2026-10-18; draft 9, under the operator's standing authorisation, settles the write guard's shape after the closing review: subordinate CLI sessions run with a run-scoped configuration directory seeded only with a copy of their credentials and removed after the run, nothing under the operator's real configuration writable, credentials denied only in the nested test guard; the label `held change revised`; the gate answer authorises the specification's commit; draft 8 closed the fourth panel: a provider name is vendor evidence only when it is a first-party maker on the operator's dated list and matches the observed model, model knowledge as vendor basis only as a gate-disclosed degradation; held changes return to the gate only when applied other than as the gate message proposed, a held blocker counts toward continuing converge; a not-a-secret operator disposition; secret removals committed before the baseline; the specification committed before the baseline and authorised untracked files excluded from the step 10 comparison; reviewer replacement capped at one; the no-model-reported selector case; write-capable copies and checkouts carry no history; review-panel's own build-and-scan rule; e as the execution symbol everywhere; draft 7 added the third candidate panel's amendments under the operator's standing authorisation: vendor evidence only from a runtime's named provider, the split of zero-match selector cases, secrets found at or after the baseline, the scope of gate: deferred, held findings at the gate, the not-re-reviewed label per converge, a history-less checkout, resume-id evidence, escalation cycles under gate: caller, and the cost block's execution placeholder; draft 6 added the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
 (Codex and a Claude model each round) and was approved by the operator on 2026-10-18. Draft 5 applies
 the amendments the operator accepted the same day after the implementation's reviewer and panel read
 the candidate (fresh-context definition, run-level symbols, cross-vendor unresolved identity, the
@@ -202,7 +202,7 @@ is permitted, labelled not re-reviewed only when applied after the last dispatch
 levels are reported, no question is asked; a `none` member, a member whose evidence lands below plan,
 or a round that lost coverage, runs and is reported, its findings held separately and not applied; the
 gate message lists every held finding with the driver's proposed disposition, the operator's answer
-that admits the member also approves the resulting specification, the gate message presents the specification with each held change applied as proposed, marked not re-reviewed, and the admitting answer approves exactly that text; a held change applied other than as the gate message proposed returns to the gate under a named cause; a held blocker or major counts toward continuing converge and as `unresolved converge` until the gate admits the member. An escalation cycle after the gate runs under `gate: caller` with the escalation
+that admits the member also approves the resulting specification, the gate message presents the specification with each held change applied as proposed, marked not re-reviewed, and the admitting answer approves exactly that text; a held change applied other than as the gate message proposed returns to the gate under the cause label `held change revised`; a held blocker or major counts toward continuing converge and as `unresolved converge` until the gate admits the member. An escalation cycle after the gate runs under `gate: caller` with the escalation
 answer. At the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
 operator's recorded gate answer, which admits only the members and levels that answer names; any
 other `none` member or lower level stops review-panel and returns to the caller as lost coverage or an
@@ -216,8 +216,7 @@ baseline or the candidate, stops the run with a report, or, on the operator's an
 step 4 on the cleaned tree with every derived artifact invalidated; a secret in the candidate is also a candidate finding and is never dispatched for remediation; the
 operator may answer `not a secret` with the pattern, path and reason, recorded in the report, and the
 run continues on that answer. A pre-baseline removal is committed in the operator repository before
-step 4 records the state; the specification is committed before step 4 as well, and the other
-authorised untracked files are listed and excluded from the step 10 delta and tree comparisons.
+step 4 records the state; the specification is committed before step 4 as well, the gate answer authorising that commit, and the other authorised untracked files are listed and excluded from the step 10 delta and tree comparisons.
 Write-capable copies and checkouts are built from the scanned tracked files (plus the listed
 authorised files) with a fresh repository initialised in the copy, never from a clone, so no history
 leaves the host; a read-only sandbox that can still read the operator repository is a residual
@@ -443,9 +442,14 @@ release.
 ## 7. Non-goals
 
 - No money estimation; no pricing tables.
-- No change to isolation, the write guard, disclosure scanning or the evidence sources beyond adding
-  tier, vendor basis, level, freshness, session, timestamp and cost fields, and the history-less build
-  of copies settled under the standing authorisation.
+- No change to isolation, disclosure scanning or the evidence sources beyond adding tier, vendor basis,
+  level, freshness, session, timestamp and cost fields; the history-less build of copies and the write
+  guard's run-scoped configuration directories are settled under the standing authorisation: each
+  subordinate CLI session gets its own configuration directory under the run, seeded with a copy of
+  its credentials file only (mode 600, removed after the run), the CLI's state written there, nothing
+  under the operator's real configuration writable, and credential reads denied only in the nested
+  test guard; the Claude CLI signs in this way (checked on this machine on 2026-10-18); Codex's
+  `provider:` header names its serving provider (observed `openai` here), evidence only under 5.1.
 - No retirement or merger of review-panel into four-eyes.
 - No automatic detection of which tier or vendor a model belongs to.
 - No persistent acceptance store.
