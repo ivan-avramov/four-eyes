@@ -1,6 +1,6 @@
 # four-eyes 0.5.0 and review-panel 0.3.0: principle over models
 
-Status: specification, draft 7 (2026-10-18; draft 7 adds the third candidate panel's amendments under the operator's standing authorisation: vendor evidence only from a runtime's named provider, the split of zero-match selector cases, secrets found at or after the baseline, the scope of gate: deferred, held findings at the gate, the not-re-reviewed label per converge, a history-less checkout, resume-id evidence, escalation cycles under gate: caller, and the cost block's execution placeholder; draft 6 added the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
+Status: specification, draft 8 (2026-10-18; draft 8, under the operator's standing authorisation, closes the fourth panel: a provider name is vendor evidence only when it is a first-party maker on the operator's dated list and matches the observed model, model knowledge as vendor basis only as a gate-disclosed degradation; held changes return to the gate only when applied other than as the gate message proposed, a held blocker counts toward continuing converge; a not-a-secret operator disposition; secret removals committed before the baseline; the specification committed before the baseline and authorised untracked files excluded from the step 10 comparison; reviewer replacement capped at one; the no-model-reported selector case; write-capable copies and checkouts carry no history; review-panel's own build-and-scan rule; e as the execution symbol everywhere; draft 7 added the third candidate panel's amendments under the operator's standing authorisation: vendor evidence only from a runtime's named provider, the split of zero-match selector cases, secrets found at or after the baseline, the scope of gate: deferred, held findings at the gate, the not-re-reviewed label per converge, a history-less checkout, resume-id evidence, escalation cycles under gate: caller, and the cost block's execution placeholder; draft 6 added the second candidate panel's consistency amendments, operator-approved, not re-verified: the none-pair exemption from the L1 stop, the gate: deferred and gate: caller semantics, standalone evidence reconciliation, the unresolved-converge definition, sanitisation scope, none members counted as unresolved, selector matching, phase B re-runs as executions). Draft 4 followed three review-panel converge rounds
 (Codex and a Claude model each round) and was approved by the operator on 2026-10-18. Draft 5 applies
 the amendments the operator accepted the same day after the implementation's reviewer and panel read
 the candidate (fresh-context definition, run-level symbols, cross-vendor unresolved identity, the
@@ -99,8 +99,10 @@ and the instruction files present in it, recorded, not required absent: the brie
 the isolated copy for write-capable roles and the read-only checkout for checkout members. One
 exemption: the reviewer's phase B resumes the reviewer's own phase A session and no other; the resumed
 id is recorded and checked equal to the phase A id, an unequal id meaning `replaced (lost session)`
-with a new candidate-blind phase A, and each runtime's resume-id behaviour is probed once per machine
-(sandbox probes) before the exemption is relied on. Remediation runs in a new worker session. Where freshness cannot be evidenced (a host subagent exposes no
+with a new candidate-blind phase A, at most once per run, a second loss going to the operator; each
+runtime's resume-id behaviour is probed once per machine (sandbox probes) before the exemption is
+relied on, and where a runtime documents id rotation on resume the recorded chain of ids stands in
+for equality. Remediation runs in a new worker session. Where freshness cannot be evidenced (a host subagent exposes no
 session id), the role has no level: it is admissible for a required pair only by the operator's answer
 in that run's gate (5.3), is reported with the `none` wording, and never counts toward distinct models.
 The driver's own session never fills a required pair.
@@ -113,7 +115,7 @@ operator's dated declaration in the panel file, cross-checked against the observ
 runtime, with `vendor basis: declared | observed | model knowledge` recorded; model knowledge as the
 basis is a degradation with fixed wording. An unverified alias (a host subagent, an echoed selector
 with no resolved model) supports L1 at most on the model axis, since unknown identity cannot establish
-model distinctness, but a vendor the runtime's own output names as the model's provider (Codex's `provider:` header, recorded in the execution record) reaches L3 with the model counted as identity unresolved; the maker of a CLI is never vendor evidence, and with no provider named the vendor falls back to the declaration or to unknown; Codex's `model:` header is the resolved model, as
+model distinctness, but a vendor reaches L3 with the model counted as identity unresolved only when the runtime's own output names a provider that is a first-party model maker on the operator's dated list and that name is consistent with the observed model id; the maker of a CLI, an aggregator or a hosting provider is never vendor evidence; with no such provider named the vendor is the operator's declaration or unknown, and model knowledge establishes a vendor only as a degradation disclosed and put to the operator at the gate; a member that reports no model at all is identity unresolved, counted in k, L1 at most; Codex's `model:` header is the resolved model, as
 runtimes.md states. An unknown vendor counts as the same vendor, so known-different models of unknown
 vendor reach L2 at most, and a request for "a vendor other than X" is never satisfied by an unknown
 vendor.
@@ -200,9 +202,7 @@ is permitted, labelled not re-reviewed only when applied after the last dispatch
 levels are reported, no question is asked; a `none` member, a member whose evidence lands below plan,
 or a round that lost coverage, runs and is reported, its findings held separately and not applied; the
 gate message lists every held finding with the driver's proposed disposition, the operator's answer
-that admits the member also approves the resulting specification, a held change applied after the
-answer returns to the gate, and a held blocker or major counts as `unresolved converge` until the gate
-admits the member. An escalation cycle after the gate runs under `gate: caller` with the escalation
+that admits the member also approves the resulting specification, the gate message presents the specification with each held change applied as proposed, marked not re-reviewed, and the admitting answer approves exactly that text; a held change applied other than as the gate message proposed returns to the gate under a named cause; a held blocker or major counts toward continuing converge and as `unresolved converge` until the gate admits the member. An escalation cycle after the gate runs under `gate: caller` with the escalation
 answer. At the candidate panel and every remediation panel four-eyes passes `gate: caller` with the
 operator's recorded gate answer, which admits only the members and levels that answer names; any
 other `none` member or lower level stops review-panel and returns to the caller as lost coverage or an
@@ -213,8 +213,15 @@ each keeping its cause label. Sanitising a found secret touches only disposable 
 scratch), with the redactions recorded; a secret in any tracked file of that tree, found before the
 baseline, waits for the operator to remove it from the tree; a secret found at or after step 4, in the
 baseline or the candidate, stops the run with a report, or, on the operator's answer, rebuilds from
-step 4 on the cleaned tree with every derived artifact invalidated; a secret in the candidate is also a
-candidate finding and is never dispatched for remediation.
+step 4 on the cleaned tree with every derived artifact invalidated; a secret in the candidate is also a candidate finding and is never dispatched for remediation; the
+operator may answer `not a secret` with the pattern, path and reason, recorded in the report, and the
+run continues on that answer. A pre-baseline removal is committed in the operator repository before
+step 4 records the state; the specification is committed before step 4 as well, and the other
+authorised untracked files are listed and excluded from the step 10 delta and tree comparisons.
+Write-capable copies and checkouts are built from the scanned tracked files (plus the listed
+authorised files) with a fresh repository initialised in the copy, never from a clone, so no history
+leaves the host; a read-only sandbox that can still read the operator repository is a residual
+exposure the report states.
 
 Worked minimum: one vendor, two models, A (`top`) and B (`capable`), both on a CLI runtime that
 reports the model and session it ran. With two models at least one required pair is always at L1.
@@ -303,8 +310,7 @@ and finish of every execution id, freezes, hashes, commit), and a totals block t
 ```
 
 Tokens are never summed across runtime-and-vendor buckets; money is never summed across runtimes,
-currencies or billing bases; an undeclared basis is its own bucket labelled `basis unknown`. Every
-subtotal states its coverage (`over n of m`). Nothing is estimated. review-panel reports the same
+currencies or billing bases; an undeclared basis is its own bucket labelled `basis unknown`. Every subtotal states its coverage (`over n of e`). Nothing is estimated. review-panel reports the same
 per-execution fields and a per-round totals block.
 
 ### 5.6 review-panel 0.3.0, proposed to the operator
@@ -324,14 +330,17 @@ per-execution fields and a per-round totals block.
    caller`, and carries the fixed `none` wording of 5.1; a non-interactive caller stops instead of
    asking. Only the acceptance of levels below preferred is delegated, and only when the caller states
    `gate: caller` and passes the operator's recorded answer as evidence, which admits only the members
-   and levels it names; `gate: deferred` dispatches no write-capable member, writes nothing outside the
-   converge artifact (the caller's revision of that artifact is permitted), reports levels and asks
-   nothing, holding a `none` member's findings separately; otherwise review-panel's own gate applies,
+   and levels it names; `gate: deferred` dispatches no write-capable member, writes nothing to the subject repository or
+   any downstream artifact (orchestration records and the caller's revision of the converge artifact
+   are permitted), reports levels and asks nothing, holding a `none` member's findings separately; otherwise review-panel's own gate applies,
    and a standalone member whose evidence lands below the accepted level is put to the operator before
    its findings are adopted, a non-interactive caller stopping instead. The report states which gate
-   applied, `deferred` recording no acceptance. The `checkout` context is a separate history-less copy (an export of the tracked files, or a
-   single-branch depth-one clone from a file URL), never a worktree and never a full clone, built per
-   four-eyes's Disclosure rule and scanned, any `.git` remnant included.
+   applied, `deferred` recording no acceptance. The `checkout` context is a `.git`-less export of the tracked files plus explicitly authorised
+   untracked files, never ignored or secret-bearing files, never a worktree and never a clone, scanned
+   for secret patterns together with the brief before dispatch; review-panel states this build-and-scan
+   rule itself, and a planned member that review-panel reports unavailable (a selector that does not
+   resolve) is four-eyes's unresolvable-selector hard stop. `gate: deferred` as 5.3 defines it: nothing
+   written to the subject repository or downstream artifacts, orchestration records permitted.
 4. Converge accepts `rounds` (1 to 3); the default stays 3 so standalone callers see no change; the
    caller decides the round count (four-eyes passes 1 in light mode and 3 in strict). The `opinion`
    and `research` modes are unchanged.
@@ -435,7 +444,8 @@ release.
 
 - No money estimation; no pricing tables.
 - No change to isolation, the write guard, disclosure scanning or the evidence sources beyond adding
-  tier, vendor basis, level, freshness, session, timestamp and cost fields.
+  tier, vendor basis, level, freshness, session, timestamp and cost fields, and the history-less build
+  of copies settled under the standing authorisation.
 - No retirement or merger of review-panel into four-eyes.
 - No automatic detection of which tier or vendor a model belongs to.
 - No persistent acceptance store.
