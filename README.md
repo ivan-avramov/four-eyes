@@ -1,4 +1,4 @@
-# four-eyes 0.6.0
+# four-eyes 0.6.1
 
 An agent skill that puts the stages of a non-trivial change into separate hands: the session you talk to designs the change and judges the findings; other models, each in a fresh session, review the design, write the tests before they see the implementation, and review the finished change; a cheaper capable model implements from the approved specification. It runs on whatever models you have, down to one subscription with two models, and its report says which roles shared a model or a vendor, so you know what the configuration could not have caught.
 
@@ -12,11 +12,11 @@ The method is cooperative, not enforced. Helpers work in a copy of the repositor
 4. A cheaper model implements it in a copy.
 5. A different model writes tests from the specification alone, then runs them on the candidate and reviews it.
 6. The panel reviews the change.
-7. One fix round, then you see the final diff and give the commit word; a push only when you say so.
+7. One fix round, then you see the final diff and accept it; the commit follows your standing instructions, a push only when you say so.
 
 ## Install
 
-Requires [review-panel](https://github.com/ivan-avramov/review-panel) 0.4.0 or later. Copy the `four-eyes/` directory (`SKILL.md`, `briefs.md`) into a skills directory:
+Requires [review-panel](https://github.com/ivan-avramov/review-panel) 0.4.1 or later. Copy the `four-eyes/` directory (`SKILL.md`, `briefs.md`) into a skills directory:
 
 - user-wide: `~/.claude/skills/` (Claude Code) and `~/.agents/skills/` (Codex and other clients)
 - per repository: `<repo>/.claude/skills/`, `<repo>/.agents/skills/`

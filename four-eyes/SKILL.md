@@ -3,8 +3,8 @@ name: four-eyes
 description: A light method for non-trivial development work that uses several models in separated roles. The session designs and judges; other models review the design in fresh sessions, a cheaper model implements from the approved specification, a different model writes tests before seeing the implementation, and a panel reviews the finished change. Use for multi-file changes, new components, architecture, and anything touching security, permissions, secrets or a data boundary, or when the operator asks for four-eyes. Not for a session that was dispatched as a helper in someone else's run.
 metadata:
   source: https://github.com/ivan-avramov/four-eyes
-  version: 0.6.0
-  requires: review-panel 0.4.0 or later (https://github.com/ivan-avramov/review-panel)
+  version: 0.6.1
+  requires: review-panel 0.4.1 or later (https://github.com/ivan-avramov/review-panel)
 ---
 
 # four-eyes
@@ -31,14 +31,14 @@ Helpers are cooperative, not sandboxed. The implementer and the test-writer work
 
 ## How a run goes
 
-1. **Design.** The designer writes the specification to the repository's proposals location: goal, scope, settled constraints marked as settled, assumptions marked as such, interfaces precise enough to test, acceptance criteria, non-goals, open questions.
+1. **Design.** The designer writes the specification to the repository's proposals location: goal, scope, settled constraints marked as settled, assumptions marked as such, interfaces precise enough to test, with a success path and a failure path traced through them, acceptance criteria, non-goals, open questions.
 2. **Design review.** The specification goes to review-panel in `converge` mode with the operator's original request, the settled constraints, the designer's assumptions and a neutral question (`briefs.md`). The designer adopts, adapts or declines each finding and records why; a declined blocker or major is shown to the operator. Changes made after the last round are marked not re-reviewed.
-3. **Go.** The operator sees the reviewed specification, the open questions with the designer's recommendation, the cast with each role's model, which roles share a model or vendor and what that leaves uncovered, and the mode. The answer approves the dispatch of helpers, changes the cast, or stops. It does not authorise the commit.
+3. **Go.** The operator sees the reviewed specification, what it requires beyond the original request, the findings recorded for the operator, the open questions with the designer's recommendation, the cast with each role's model, which roles share a model or vendor and what that leaves uncovered, and the mode. The answer approves the dispatch of helpers, changes the cast, or stops. It does not accept the change. Go holds through retries and repairs within the approved specification; the designer asks again only at the asks these steps name and for a change of scope or authority. A change to the specification after Go is such an ask; one that touches architecture as Modes defines it goes through one design-review round before the ask.
 4. **Implement.** The implementer gets the specification, the files in scope, the test command and the constraint block, in a copy at a recorded baseline, and returns a complete candidate with a factual report of what it ran and what passed. The candidate is exported as a diff against the baseline that includes new, deleted and binary files and that rebuilds the candidate when applied to a clean copy.
 5. **Tests first.** The test-writer's first delivery, from the specification and the baseline only, writes the tests into a named directory and reports their outcomes on the baseline. The designer keeps that directory as the frozen tests, with the time, before the candidate is revealed. The second delivery gets the candidate and the implementer's report, rebuilds a clean copy with the candidate and the frozen tests, runs them and the suite, reviews, and gives a verdict (`briefs.md`). A frozen test the designer judges invalid is recorded with the reason, shown to the operator; only the test-writer amends it, and the amended test is frozen again.
 6. **Change review.** The candidate, the frozen tests and both reports go to review-panel in `opinion` mode; in strict mode the sensitive hunks are pointed out. The designer judges the findings.
-7. **Fix.** Findings go once to a fresh implementer session with the specification, the candidate, the findings and the frozen tests. The fixed candidate gets the test-writer's second delivery and a change review again. A second fix round is the operator's call; declined, the outcome is `rejected` and nothing is committed.
-8. **Accept.** When every finding has a disposition, every required fix is done and verified, no verdict is reject, no blocker is open, the tests pass on the final candidate and the operator's tree is as it was, the designer shows the operator the final diff with the findings and asks; that answer is the commit word. The designer applies the final diff, implementation and tests together with the specification, to the operator's tree and commits those paths only. A push, or a release, happens only when the operator says so, in that turn.
+7. **Fix.** The findings, as adopted or adapted, go once to a fresh implementer session with the specification, the candidate and the frozen tests (`briefs.md`). A test the implementer reports as unsupported by the specification is judged as in step 5. The fixed candidate gets the test-writer's second delivery and a change review again. A second fix round is the operator's call; declined, the outcome is `rejected` and nothing is committed.
+8. **Accept.** When every finding has a disposition, every required fix is done and verified, no verdict is reject, no blocker is open, the tests pass on the final candidate and the operator's tree is as it was, the designer shows the operator the final diff with the findings and asks whether the change is accepted. The designer applies the final diff, implementation and tests together with the specification, to the operator's tree and commits those paths only, as the operator's standing instructions allow, or asks when there are none. A push, or a release, happens only when the operator says so, in that turn.
 9. **Report.** The block below: who ran what, with model and session ids for every session including fixes; what the configuration did not cover; the findings and their dispositions, declined ones quoted; the tests and their results; the runtime-reported cost per helper where there is one.
 
 A run that stops produces a short report saying where and why, and that nothing was committed or pushed.
@@ -46,7 +46,7 @@ A run that stops produces a short report saying where and why, and that nothing 
 ## Modes
 
 - **Light** (default): one design-review round; each candidate gets one change review; one fix round.
-- **Strict**: up to three design-review rounds; the change review names the sensitive hunks. Strict applies to security, authentication, permissions, secrets, a data boundary, and architecture (a new component, a changed interface contract, a data-model change, a change to consistency or isolation), and to anything the operator names. A sensitive area that turns up during the run moves the run to strict and is mentioned to the operator at the next ask.
+- **Strict**: up to three design-review rounds; the change review names the sensitive hunks. Strict changes the number of rounds and what the change review looks at, not what the specification promises. Strict applies to security, authentication, permissions, secrets, a data boundary, and architecture (a new component, a changed interface contract, a data-model change, a change to consistency or isolation), and to anything the operator names. A sensitive area that turns up during the run moves the run to strict and is mentioned to the operator at the next ask.
 
 ## Briefs
 
@@ -65,14 +65,14 @@ A run that stops produces a short report saying where and why, and that nothing 
 ## Report block
 
 ```
-[four-eyes 0.6.0] outcome: completed | stopped | rejected; mode: light | strict (reason)
+[four-eyes 0.6.1] outcome: completed | stopped | rejected; mode: light | strict (reason)
 designer: <runtime: model, session>
 design review: <per member: runtime: model, session, context, returned | failed>; rounds n; same model as designer: <members | none>; same vendor: <members | none>
 implementer: <runtime: model, session>; fixes: <sessions>
 test-writer: <runtime: model, session; second delivery continued | replaced>; same model as designer | implementer: <yes | no>; tests frozen <time>, candidate revealed <time>
 change review: <per member ...>; same model as implementer: <...>; same vendor: <...>
 not covered: <one clause per shared pair: errors that model, or that vendor, makes consistently>
-go: <time, operator's words>; commit word: <time, operator's words | none>; commit: <hash | none>; push: none | <operator's words>
+go: <time, operator's words>; accept: <time, operator's words | none>; commit: <hash | none>; push: none | <operator's words>
 cost, as reported: <per session, or unreported>
 ```
 
