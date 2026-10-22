@@ -4,7 +4,7 @@ Panel briefs follow review-panel's rules and end with its return contract. Imple
 
 ## Design review (review-panel `converge`)
 
-In this order: the operator's original request in their words or a faithful paraphrase; the settled constraints, each marked by whom; the designer's assumptions, marked as such; the specification as the delimited material; a neutral question asking for disconfirming cases against the acceptance criteria, the constraints and the request, where a helper following the text literally would fail, what the specification requires beyond the request, and what is ambiguous, with a request to flag any sensitive area; and the converge return contract, last. The brief does not say which round it is.
+In this order: the operator's original request in their words or a faithful paraphrase; the goal paragraph of the specification, verbatim; the settled constraints, each marked by whom; the designer's assumptions, marked as such; the specification as the delimited material; a neutral question asking for disconfirming cases against the acceptance criteria, the constraints and the request, where a helper following the text literally would fail, what the specification requires beyond the goal and what it could drop or simplify while still meeting it, and what is ambiguous, with a request to flag any sensitive area; and the converge return contract, last. The brief does not say which round it is.
 
 ## Implementer
 

@@ -1,4 +1,4 @@
-# four-eyes 0.6.1
+# four-eyes 0.6.2
 
 An agent skill that puts the stages of a non-trivial change into separate hands: the session you talk to designs the change and judges the findings; other models, each in a fresh session, review the design, write the tests before they see the implementation, and review the finished change; a cheaper capable model implements from the approved specification. It runs on whatever models you have, down to one subscription with two models, and its report says which roles shared a model or a vendor, so you know what the configuration could not have caught.
 
@@ -7,7 +7,7 @@ The method is cooperative, not enforced. Helpers work in a copy of the repositor
 ## What a run looks like
 
 1. The session writes a specification with acceptance criteria.
-2. A panel of other models reviews it (one round by default, up to three for security and architecture); the session adopts or declines each finding and says why.
+2. A panel of other models reviews it (one round by default, up to three for security and architecture); each round starts from the goal, the session cuts or rewrites before it adopts, and the review ends when the acceptance criteria stop moving and nothing the session can name would make the outcome better.
 3. You see the reviewed design, the planned cast and what pairs share a model or vendor, and say go.
 4. A cheaper model implements it in a copy.
 5. A different model writes tests from the specification alone, then runs them on the candidate and reviews it.
