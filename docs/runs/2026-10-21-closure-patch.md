@@ -16,3 +16,7 @@ Sample case for an evaluation: the juno-ai run of 2026-10-21 (specification `doc
 ## 0.6.3, the same day
 
 The 0.6.2 rule sat in step 2 alone; at the change review of the same run the designer adopted five cosmetic minors beside the one defect, the same reflex at a step the rule did not name, caught by a side agent. 0.6.3 states the rule at the change review (step 6) and lets only findings adopted under it reach the fix (step 7). Evidence that an instruction stated once does not generalize across steps in practice; the evaluation harness should measure each judging point.
+
+## 0.6.4, the same run
+
+After the first fix round, each strict change review found the next instance of one class (shell string operations quadratic on a crafted line of hundreds of kilobytes), the designer adopted each as real and cheap, and step 7 left it only two exits, the operator's word for another round or rejection, so the operator was asked for a round three times. The operator: "you keep asking me to run extra rounds. It starts to look again like a problem with the skill." 0.6.4 lets the designer record a finding of a bounded or residual class, or one needing an input outside the goal's operating conditions, and proceed to Accept; a further round is asked for only when the goal fails on an input it covers.
