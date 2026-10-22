@@ -12,3 +12,7 @@ Changes, applied without a panel round (the operator's wording, settled in conve
 - README step 2 restated. Modes unchanged.
 
 Sample case for an evaluation: the juno-ai run of 2026-10-21 (specification `docs/design/uv-log-userinfo-and-host-widening.md`, three strict rounds, 79 findings, the specification from about 2,300 to 4,800 words before the operator's cut back to 4,500), mirrored with every brief, review and ledger under the evidence repository's `sessions/2026-10-21-session-E/`.
+
+## 0.6.3, the same day
+
+The 0.6.2 rule sat in step 2 alone; at the change review of the same run the designer adopted five cosmetic minors beside the one defect, the same reflex at a step the rule did not name, caught by a side agent. 0.6.3 states the rule at the change review (step 6) and lets only findings adopted under it reach the fix (step 7). Evidence that an instruction stated once does not generalize across steps in practice; the evaluation harness should measure each judging point.
