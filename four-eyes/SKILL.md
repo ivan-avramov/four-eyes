@@ -1,9 +1,9 @@
 ---
 name: four-eyes
-description: A light method for non-trivial development work that uses several models in separated roles. The session designs and judges; other models review the design in fresh sessions, a cheaper model implements from the approved specification, a different model writes tests before seeing the implementation, and a panel reviews the finished change. Use for multi-file changes, new components, architecture, and anything touching security, permissions, secrets or a data boundary, or when the operator asks for four-eyes. Not for a session that was dispatched as a helper in someone else's run.
+description: A light method for non-trivial development work that uses several models in separated roles. The session designs and judges; other models review the design in fresh sessions, a capable model implements from the approved specification, a different model writes tests before seeing the implementation, and a panel reviews the finished change. Use for multi-file changes, new components, architecture, and anything touching security, permissions, secrets or a data boundary, or when the operator asks for four-eyes. Not for a session that was dispatched as a helper in someone else's run.
 metadata:
   source: https://github.com/ivan-avramov/four-eyes
-  version: 0.6.5
+  version: 0.6.6
   requires: review-panel 0.4.1 or later (https://github.com/ivan-avramov/review-panel)
 ---
 
@@ -13,17 +13,17 @@ A session that was dispatched as a helper in another run (an implementer, a test
 
 ## The idea
 
-A model anchored on its own design, or its own code, misses defects that a fresh context is more likely to catch, and a model trained elsewhere more likely still. four-eyes puts the stages of a piece of work into separate hands: the session that talks to the operator designs the change and judges the findings; other models, each in a fresh session, review the design, write the tests and review the finished change; a cheaper capable model does the implementation. Expensive models go where judgement matters, design and review; cheaper ones go to routine work. None of this is enforced by the operating system. It rests on fresh sessions, on briefs that give each helper only what its job needs, and on an honest report of who did what and what that configuration could not have caught.
+A model anchored on its own design, or its own code, misses defects that a fresh context is more likely to catch, and a model trained elsewhere more likely still. four-eyes puts the stages of a piece of work into separate hands: the session that talks to the operator designs the change and judges the findings; other models, each in a fresh session, review the design, write the tests and review the finished change; a capable model does the implementation. The strongest models go where judgement matters, design and review; the others go to routine work. None of this is enforced by the operating system. It rests on fresh sessions, on briefs that give each helper only what its job needs, and on an honest report of who did what and what that configuration could not have caught.
 
 ## Roles and cast
 
 - **Designer**: the session. It writes the specification, briefs the helpers, judges every finding, and asks the operator at Go and at Accept.
 - **Design reviewers**: a review-panel `converge` on the specification.
-- **Implementer**: a fresh session of a capable, cheaper model, working in a copy of the repository from the approved specification alone. It commits nothing.
+- **Implementer**: a fresh session of a capable model, working in a copy of the repository from the approved specification alone. It commits nothing.
 - **Test-writer**: a fresh session of a model other than the implementer, with two deliveries from the same session: tests written from the specification before it sees the implementation, then a run of those tests and a review of the candidate. The continuation is the one exception to "fresh". If the session cannot be continued, a new test-writer starts blind and makes the first delivery again before it sees the candidate; the report says `replaced`.
 - **Change reviewers**: a review-panel `opinion` on the frozen change, its tests and the helpers' reports.
 
-The models come from the operator's review-panel file, in its order; the designer judges which are strongest from their names and shows the cast at Go, where the operator can change it. The strongest go to design review, with the session's own model counted among them; cheaper ones to implementation and tests. With one subscription and two models, the second model reviews the design, writes the tests and sits on the change review, and fresh sessions of the session's own model fill the rest: cross-model checks go where anchoring costs most, at design review and tests, at the price of an expensive implementer. With a single model, every role is a fresh session of it, and the report says so. Fresh sessions, context levels and what a different model or vendor buys are defined in review-panel; the implementer and the test-writer work with the copy's project instructions, since they need its conventions.
+The models come from the operator's review-panel file, in its order; the designer judges which are strongest from their names and shows the cast at Go, where the operator can change it. The strongest go to design review, with the session's own model counted among them; the others to implementation and tests. With one subscription and two models, the second model reviews the design, writes the tests and sits on the change review, and fresh sessions of the session's own model fill the rest: cross-model checks go where anchoring matters most, at design review and tests, and the implementer is then a fresh session of the session's own model. With a single model, every role is a fresh session of it, and the report says so. Fresh sessions, context levels and what a different model or vendor adds are defined in review-panel; the implementer and the test-writer work with the copy's project instructions, since they need its conventions.
 
 ## Confinement, by trust
 
@@ -65,7 +65,7 @@ A run that stops produces a short report saying where and why, and that nothing 
 ## Report block
 
 ```
-[four-eyes 0.6.5] outcome: completed | stopped | rejected; mode: light | strict (reason)
+[four-eyes 0.6.6] outcome: completed | stopped | rejected; mode: light | strict (reason)
 designer: <runtime: model, session>
 design review: <per member: runtime: model, session, context, returned | failed>; rounds n; same model as designer: <members | none>; same vendor: <members | none>
 implementer: <runtime: model, session>; fixes: <sessions>
