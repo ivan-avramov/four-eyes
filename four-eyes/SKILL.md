@@ -3,7 +3,7 @@ name: four-eyes
 description: A light method for non-trivial development work that uses several models in separated roles. The session designs and judges; other models review the design in fresh sessions, a cheaper model implements from the approved specification, a different model writes tests before seeing the implementation, and a panel reviews the finished change. Use for multi-file changes, new components, architecture, and anything touching security, permissions, secrets or a data boundary, or when the operator asks for four-eyes. Not for a session that was dispatched as a helper in someone else's run.
 metadata:
   source: https://github.com/ivan-avramov/four-eyes
-  version: 0.6.4
+  version: 0.6.5
   requires: review-panel 0.4.1 or later (https://github.com/ivan-avramov/review-panel)
 ---
 
@@ -39,7 +39,7 @@ Helpers are cooperative, not sandboxed. The implementer and the test-writer work
 6. **Change review.** The candidate, the frozen tests and both reports go to review-panel in `opinion` mode; in strict mode the sensitive hunks are pointed out. The designer judges the findings under the rule of step 2: a finding is adopted for its problem, never for its mechanism, and only when resolving it raises the outcome against the goal; the rest are declined and recorded.
 7. **Fix.** The findings adopted under that rule, and nothing else, go once to a fresh implementer session with the specification, the candidate and the frozen tests (`briefs.md`). A test the implementer reports as unsupported by the specification is judged as in step 5. The fixed candidate gets the test-writer's second delivery and a change review again. A finding of a class the specification bounds or names as residual, or whose failure needs an input the goal's operating conditions do not cover, is recorded, not fixed, and the run proceeds to Accept when the frozen tests and the suite pass; the designer asks the operator for a further round only for a finding that shows the goal failing on an input it covers. A second fix round is the operator's call; declined, the outcome is `rejected` and nothing is committed.
 8. **Accept.** When every finding has a disposition, every required fix is done and verified, no verdict is reject, no blocker is open, the tests pass on the final candidate and the operator's tree is as it was, the designer shows the operator the final diff with the findings and asks whether the change is accepted. The designer applies the final diff, implementation and tests together with the specification, to the operator's tree and commits those paths only, as the operator's standing instructions allow, or asks when there are none. A push, or a release, happens only when the operator says so, in that turn.
-9. **Report.** The block below: who ran what, with model and session ids for every session including fixes; what the configuration did not cover; the findings and their dispositions, declined ones quoted; the tests and their results; the runtime-reported cost per helper where there is one.
+9. **Report.** The block below: who ran what, with model and session ids for every session including fixes; what the configuration did not cover; the findings and their dispositions, declined ones quoted; the tests and their results.
 
 A run that stops produces a short report saying where and why, and that nothing was committed or pushed.
 
@@ -65,7 +65,7 @@ A run that stops produces a short report saying where and why, and that nothing 
 ## Report block
 
 ```
-[four-eyes 0.6.4] outcome: completed | stopped | rejected; mode: light | strict (reason)
+[four-eyes 0.6.5] outcome: completed | stopped | rejected; mode: light | strict (reason)
 designer: <runtime: model, session>
 design review: <per member: runtime: model, session, context, returned | failed>; rounds n; same model as designer: <members | none>; same vendor: <members | none>
 implementer: <runtime: model, session>; fixes: <sessions>
@@ -73,7 +73,6 @@ test-writer: <runtime: model, session; second delivery continued | replaced>; sa
 change review: <per member ...>; same model as implementer: <...>; same vendor: <...>
 not covered: <one clause per shared pair: errors that model, or that vendor, makes consistently>
 go: <time, operator's words>; accept: <time, operator's words | none>; commit: <hash | none>; push: none | <operator's words>
-cost, as reported: <per session, or unreported>
 ```
 
 ## When to use it
